@@ -1,2 +1,0 @@
-# UNISUL
-Trabalhos da UNISUL
