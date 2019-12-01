@@ -1,0 +1,75 @@
+#include <Servo.h> 
+
+Servo myservo;
+const int servo_pin = 10;
+const int trig_pin = 3;
+const int echo_pin = 4;
+const int inter_time = 200;
+
+const int red_light_pin= 7;
+const int green_light_pin = 6;
+const int blue_light_pin = 5;
+
+int time = 0;
+
+void setup() 
+{
+  Serial.begin(9600);
+  myservo.attach(servo_pin, 500, 2400);
+  myservo.write(90);
+  pinMode (trig_pin, OUTPUT);
+  pinMode (echo_pin, INPUT);
+
+  pinMode(red_light_pin, OUTPUT);
+  pinMode(green_light_pin, OUTPUT);
+  pinMode(blue_light_pin, OUTPUT);
+  
+} 
+
+void loop() 
+{
+
+  RGB_color(255, 0, 0); // Red
+  
+  float duration, distance;
+  digitalWrite(trig_pin, HIGH);
+  delay(1000);
+  digitalWrite(trig_pin, LOW);
+  duration = pulseIn (echo_pin, HIGH);
+  distance = (duration/2)/29;
+  Serial.print(distance);
+  Serial.println(" cm");
+
+  
+  time = time + inter_time;
+  delay(inter_time);
+  if (distance < 10)
+  {
+
+    RGB_color(0, 255, 0); // Green
+    
+    for(int i = 1500; i >= 1100; i-=25){
+      RGB_color(0, 0, 255); // Blue
+      myservo.writeMicroseconds(i);
+      Serial.println("2");
+      delay(100);
+    }
+
+    RGB_color(0, 255, 0); // Green
+    
+    delay(2000);
+    for(int i = 1100; i <= 1500; i+=25){
+      RGB_color(0, 0, 255); // Blue
+      myservo.writeMicroseconds(i);
+      Serial.println("1");
+      delay(100);
+    }
+  }
+}
+
+void RGB_color(int red_light_value, int green_light_value, int blue_light_value)
+ {
+  analogWrite(red_light_pin, red_light_value);
+  analogWrite(green_light_pin, green_light_value);
+  analogWrite(blue_light_pin, blue_light_value);
+}
